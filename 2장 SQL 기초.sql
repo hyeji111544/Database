@@ -63,7 +63,7 @@ INSERT INTO `TblUser` VALUES ('p101', '김유신', '010-1234-1001', 25 , '경남
 INSERT INTO `TblUser` VALUES ('p102', '김춘추', '010-1234-1002', 23 , '경남 경주시');
 INSERT INTO `TblUser` (`user_id`, `user_name`, `user_age`, `user_addr`) VALUES ('p103', '장보고', 31 , '전남 완도군');
 INSERT INTO `TblUser` SET `user_id`='p104', `user_name`='강감찬', `user_addr`='서울시 중구';
-INSERT INTO `TblUser` (`user_id`, `user_name`, `user_hp`, `user_age`) VALUES ('p103', '장보고', '010-1234-1005' , 50);
+INSERT INTO `TblUser` (`user_id`, `user_name`, `user_hp`, `user_age`) VALUES ('p105', '이순신', '010-1234-1005' , 50);
 
 CREATE TABLE `TblProduct`(
 `prod_no`		int,
@@ -93,7 +93,21 @@ select * from `Tbluser` where `user_id`='p104' or `user_id`='p105';
 select * from `Tbluser` where `user_addr`='부산시 금정구';
 select * from `Tbluser` where `user_age` >30;
 select * from `Tbluser` where `user_hp` IS NULL;
-update  `Tbluser`
+update  `Tbluser` SET `user_age`=42 where `user_id`='p104';
+update  `Tbluser` SET `user_addr`='부산시 진구' where `user_id`='p105';
+delete from `Tbluser` where `user_id`='p103';
+
+select*from `TblProduct`;
+select `prod_name` From `TblProduct`;
+select `prod_name`,  `prod_company`, `prod_price` from `TblProduct`;
+select*from `TblProduct`where `prod_company`='LG전자';
+select*from `TblProduct`where `prod_company`='삼성전자';
+update `TblProduct` set
+					`prod_company`='삼성전자',
+                    `prod_date`='2024-01-01'
+                    where
+                    `prod_no`=1006;
+                    
 
 
 

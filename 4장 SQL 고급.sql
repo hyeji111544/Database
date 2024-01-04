@@ -132,16 +132,181 @@ create table `Department`(
     insert into `Department` values (106, '영업지원부', '051-512-1006');
     insert into `Department` values (107, '인사부', '051-512-1007');
 
-    
-    
-    
 #실습 4-3
+select * from `Member` where `name`='김유신';
+select * from `Member` where `pos`='차장' and dep=101;
+select * from `Member` where `pos`='차장' or	dep=101;
+select * from `Member` where `name` != '김춘추';
+select * from `Member` where `name` <> '김춘추';
+select * from `Member` where `pos`='사원' or `pos`='대리';
+select * from `Member` where `pos` in('사원','대리');
+select * from `Member` where `dep` IN(101, 102, 103);
+select * from `Member` where `name` like '%신'; #`%`자리에 아무거나 와도 된다는뜻 ->0신
+select * from `Member` where `name` like '김%';
+select * from `Member` where `name` like `김__`;
+select * from `Member` where `name` like `_성_`;
+select * from `Member` where `name` like '정_'; #정_는 글자수 표현, 만약 정%였으면 정약용도 나옴.
+select * from `Sales` where `sale` > 50000;
+select * from `Sales` where `sale` >=50000 and `sale`<100000 and `month`=1;
+select * from `Sales` where `sale` between 50000 and 100000;
+select * from `Sales` where `sale` not between 50000 and 10000;
+select * from `Sales` where `year` in(2020); 
+select * from `Sales` where `month` in(1, 2);
 #실습 4-4
+select * from `sales` order by `sale`;
+select * from `sales` order by `sale` ASC;
+select * from `sales` order by `sale` DESC;
+select * from `member` order by `name`;
+select * from `member` order by `name` DESC;
+select * from `member` order by `name` ASC;
+select * from `Sales` where `sale` > 50000 order by `sale` desc;
+select * from `Sales`
+where `sale` > 50000
+order by `year`,`month`,`sale` DESC;
+
 #실습 4-5
+select * from `Sales` Limit 3;
+select * from `Sales` Limit 0, 3;
+select * from `Sales` Limit 1, 2;
+select * from `Sales` Limit 5, 3;
+select * from `Sales` order by `sale` DESC Limit 3, 5;
+select * from `Sales` where `sale` < 50000 order by `sale` desc Limit 3;
+select * from `Sales` 
+where `sale` > 50000
+order by `year` DESC, `month`, `sale` DESC
+Limit 5;
+
 #실습 4-6
-#실습 4-7
-#실습 4-8
-#실습 4-9
+select sum(`sale`) as `합계` from `Sales`;
+select AVG(`sale`) as `평균` from `Sales`;
+select max(`sale`) as `최대값` from `Sales`;
+select min(`sale`) as `최소값` from `Sales`;
+select ceiling(1.2);#(=ceil)
+select ceiling(1.8);
+select floor(1.2);
+select floor(1.8);
+select round(1.2);
+select round(1.8);
+select rand();
+select ceil(rand() * 10);
+select count(`sale`) as `갯수` from `sales`;
+select count(*) as `갯수` from `Sales`;
+
+select left('HelloWorld', 5);
+select right ('HelloWorld', 5);
+select substring('HelloWorld', 6, 5);
+select concat('Hello','World');
+select concat(`uid`, `name`, `hp`) from `member` where `uid`= 'a108';
+select curdate();
+select curtime();
+select now();
+insert into `member` values ('a112', '유관순', '010-1234-1012', '대리', 107, now());
+select * from `member` where `uid`='a112';
+
+#실습 4-7 2018년 매출의 총합을 구하시오
+select `uid`, count(*) from `Sales` group by `uid`;
+select Sum(`sale`) as `합계` from `sales` where `year`=2018;
+
+#실습 4-8 2019년 2월에 5만원 이상 매출에 대한 총합과 평균을 구하시오.
+select sum(`sale`) as `합계`, avg(`sale`) as `평균` 
+from `sales` where `month` = 2 and `sale`>= 50000;
+
+
+#실습 4-9 2020년 전체 매출 가운데 최저, 최고, 매출을 구하시오.
+select * from `Sales` where `year` = 2020 order by `sale` asc limit 1;
+select * from `Sales` where `year` = 2020 order by `sale` desc limit 1;
+
 #실습 4-10
+select * from `Sales` group by `uid`;
+select * from `Sales` group by `year()`;
+select * from `Sales` group by `uid`, `year()`;
+select`uid`, count(*) as`건수` from `sales` group by `uid`;
+select`uid`, sum(sale) as`합계` from `sales` group by `uid`;
+select`uid`, avg(sale) as`평균` from `sales` group by `uid`;
+
+select`uid`, `year`, SUM(sale) AS `합계`
+from `Sales`
+group by `uid`, `year`;
+
+select`uid`, `year`, SUM(sale) AS `합계`
+from `Sales`
+group by `uid`, `year`
+ORDER by `year`ASC, `합계`DESC;
+
+
 #실습 4-11
+select `uid`, sum(sale) as `합계` from `Sales`
+group by `uid`
+having `합계` >= 200000;
+
+select `uid`, `year`, sum(sale) as `합계`
+from `sales`
+where `sale`>= 100000
+group by `uid`, `year`
+having `합계` >= 200000
+order by `합계` desc;
+
 #실습 4-12
+create table `Sales2` like `Sales`;
+insert into `sales2` select * from `sales`;
+update `Sales2` SET `year` = `year` + 3;
+
+select * from `Sales` union select * from `Sales2`;
+select * from `Sales` where `sale`>=100000 
+union select * from `Sales2` where `sale`>=100000;
+
+select `uid`, `year`, `sale` from `Sales`
+union select `uid`, `year`, `sale` from `Sales2`;
+
+select `uid`, `year`, sum(sale) as `합계`
+from `Sales`
+group by `uid`, `year`
+union
+select `uid`, `year`, sum(sale) as `합계`
+from `Sales2`
+group by `uid`, `year`
+order by `year` asc, `합계` desc;
+
+#실습 4-13
+select * from `Sales` inner join `Member` on `Sales`.uid = `member`.uid;
+select * from `Member` inner join `department` on `member`.dep = `department`.depNo;
+
+select * from `Sales` as a join `Member` as b on a.uid = b.uid;
+select * from `member` as a join `department` as b on a.dep = b.depNo;
+
+select * from `Sales` as a, `Member` as b where a.uid = b.uid;
+select * from `member` as a, `department` as b where a.dep = b.depNo;
+
+select a.`seq`, a.`uid`, `sale`, `name`, `pos` from `Sales` as a
+join `member` as b on a. `uid` = b.`uid`;
+
+select a.`seq`, a.`uid`, `sale`, `name`, `pos` from `sales` as a
+join `member` as b on a.`uid` = b.`uid`
+where `sale`>= 100000;  #where 을 사용하여 테이블 결합에 조건을 더함.
+
+select a. `seq`, a.`uid`, b.`name`, b.`pos`, `year`, sum(`sale`) as `합계` from `sales` as a
+join `member` as b on a.uid = b.uid
+group by a.`uid`, a.`year` having `합계` >= 100000
+order by a.`year` ASC, `합계` DESC;
+
+select * from `Sales` as a
+join `Member` as b USING (`uid`); #세일즈와 멤버의 이름이 같아서 USING 사용함.
+
+select 
+	a.`uid`,
+    a.`year`,
+    a.`month`,
+    a.`sale`,
+    b.`name`,
+    b.`hp`,
+    c.`name`
+from `Sales` as a
+join `Member` as b on a.uid = b.uid
+join `department` as c on b.dep = c.depNo;
+
+ 
+#실습 4-14
+select * from `Sales` as a inner join `Member` as b on a.uid = b.uid; #교집합만 나온다.
+select * from `Sales` as a left	 join `Member` as b on a.uid = b.uid; #왼쪽 테이블이 기준 즉 왼쪽 데이터는 전부 나온다.
+select * from `Sales` as a right join `Member` as b on a.uid = b.uid; 
+#실습 4-15 
