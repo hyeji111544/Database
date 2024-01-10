@@ -60,5 +60,111 @@ select concat('100','200');
 
 select concat(100, '200');
 select 100+ '200';
-#손코딩 p17
-#손코딩 p17
+#손코딩 p177
+use `marKet_db`;
+select *
+	from `buy`
+    inner join `member`
+    on buy.mem_id = member.mem_id
+where buy.mem_id = 'GRL';
+#손코딩 p179
+select *
+	from `buy`
+    inner join `member`
+    on buy.mem_id = member.mem_id;
+    
+#손코딩 p180
+select buy.`mem_id`, `mem_name`, `prod_name`, `addr`, concat(phone1, phone2) '연락처'
+	from buy inner join `member`
+    on buy.mem_id = member.mem_id;
+
+#손코딩 p181
+select buy.`mem_id`, member.`mem_name`, buy.`prod_name`, member.`addr`, concat(member.phone1, member.phone2) '연락처'
+	from buy inner join `member`
+    on buy.mem_id = member.mem_id;
+select B.`mem_id`, M.`mem_name`, B.`prod_name`, M.`addr`, concat(M.phone1, M.phone2)'연락처'
+	from buy B
+		inner join member M
+		on B.mem_id = M.mem_id;
+select B.`mem_id`, M.`mem_name`, B.`prod_name`, M.`addr`
+	from buy B
+		inner join member M
+		on B.mem_id = M.mem_id
+	order by M.mem_id;
+#손코딩 p183
+select distinct M.`mem_id`, M.`mem_name`, M.`addr`
+	from buy B
+		inner join member M
+		on B.mem_id = M.mem_id
+	order by M.mem_id;
+#손코딩 p184
+select B.`mem_id`, M.`mem_name`, B.`prod_name`, M.`addr`
+	from member M
+		left outer join buy B
+		on B.mem_id = M.mem_id
+	order by M.mem_id;
+#손코딩 p185
+select B.`mem_id`, M.`mem_name`, B.`prod_name`, M.`addr`
+	from buy B
+		right outer join member M
+		on B.mem_id = M.mem_id
+	order by M.mem_id;
+
+select M.`mem_id`, B.`prod_name`, M.`mem_name`,  M.`addr`
+	from member M
+		left outer join buy B
+		on M.mem_id = B.mem_id
+	where B.prod_name is null
+	order by M.mem_id;
+
+#손코딩 p187
+select * from `buy` cross join `member`;
+#손코딩 p188
+select count(*) '데이터 개수'
+	from sakila.inventory
+		cross join world.city;
+create table `cross_table`
+	select*from sakila.actor
+		cross join world.country;
+drop table `cross_table`;
+select*from `cross_table` limit 5;
+
+#손코딩 p191
+use market_db;
+create table `emp_table`(
+	emp		char(4),
+    manager	char(4),
+    phone	varchar(8)
+    );
+INSERT INTO emp_table VALUES('대표', NULL, '0000');
+INSERT INTO emp_table VALUES('영업이사', '대표', '1111');
+INSERT INTO emp_table VALUES('관리이사', '대표', '2222');
+INSERT INTO emp_table VALUES('정보이사', '대표', '3333');
+INSERT INTO emp_table VALUES('영업과장', '영업이사', '1111-1');
+INSERT INTO emp_table VALUES('경리부장', '관리이사', '2222-1');
+INSERT INTO emp_table VALUES('인사부장', '관리이사', '2222-2');
+INSERT INTO emp_table VALUES('개발팀장', '정보이사', '3333-1');
+INSERT INTO emp_table VALUES('개발주임', '정보이사', '3333-1-1');
+
+select A.emp '직원', B.emp '직속상관', B.phone '직속상관연락처'
+	from `emp_table` A
+		inner join `emp_table` B
+        on A.manager = B.emp
+	where A.emp = '경리부장';
+#손코딩 p197
+drop procedure if exists ifproc1;
+delimiter $$
+create procedure ifProc1()
+begin
+	if 100 = 100 then
+		select '100은 100과 같습니다.';
+	end if;
+end $$
+delimiter ;
+call ifProc1();
+
+#손코딩 p196
+#손코딩 p196
+#손코딩 p196
+
+    
