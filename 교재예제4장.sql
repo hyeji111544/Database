@@ -163,8 +163,45 @@ end $$
 delimiter ;
 call ifProc1();
 
-#손코딩 p196
-#손코딩 p196
-#손코딩 p196
+#손코딩 p199
+drop procedure if exists ifproc2;
+delimiter $$
+create procedure ifProc2()
+begin
+	Declare myNum Int;
+    set myNum = 200;
+	if myNum = 100 then
+		select '100 입니다.';
+	else
+		select '100이 아닙니다.';
+	end if;
+end $$
+delimiter ;
+call ifProc2();
+#손코딩 p200
+drop procedure if exists ifProc3;
+delimiter $$
+create procedure ifproc3()
+begin
+	declare debutDate date;
+    declare curDate	date;
+    declare days int;
+    
+    select `debut_date` into `debutDate`
+		from market_db.member
+        where `mem_id`='APN';
+        
+	set curDATE = current_date();
+    set days = datediff(curDATE, debutDate);
+    
+    If(days/ 365) >=5 then
+		select concat('데뷔한 지', days, '일이나 지났습니다. 핑순이들 축하합니다!');
+	else
+		select'데뷔한 지' + days + '일밖에 안되었네요. 핑순이들 화이팅~';
+        end if;
+	end $$
+    delimiter ;
+    call ifProc3
+#손코딩 p201
 
     
