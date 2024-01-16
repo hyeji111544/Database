@@ -125,7 +125,12 @@ select * from `patients`
     between 30 and 39;
 
 
- select * from `patients` where left(`pat_jumin`, 2)<=95 and left(`pat_jumin`, 2) >85;
+ select * from `patients` 
+ where 
+	year(now())-concat('19', left(`pat_jumin`, 2)) >= 30
+    and
+    year(now())-concat('19', left(`pat_jumin`, 2)) < 40;
+ 
 
 #문제 8 의사ID가 부여되지 않은 의사의 이름과 부서명 조회
 select `dep_manager`, `dep_name` from `departments`as a
