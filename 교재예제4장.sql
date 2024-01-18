@@ -183,16 +183,16 @@ drop procedure if exists ifProc3;
 delimiter $$
 create procedure ifproc3()
 begin
-	declare debutDate date;
-    declare curDate	date;
-    declare days int;
+	declare debutDate date; -- 데뷔일자
+    declare curDate	date;	-- 오늘
+    declare days int;		-- 활동한 일수 
     
-    select `debut_date` into `debutDate`
+    select `debut_date` into `debutDate` -- APN의 데뷔 일자를 추출해 into 를 사용하여 debutDate 에 저장.
 		from market_db.member
         where `mem_id`='APN';
         
-	set curDATE = current_date();
-    set days = datediff(curDATE, debutDate);
+	set curDATE = current_date();	-- 현재날짜
+    set days = datediff(curDATE, debutDate); -- dateiff 를 사용해 데뷔날짜부터 현재 날짜 까지의 일수를 저장.(데뷔한지 얼마나 지났는지)
     
     If(days/ 365) >=5 then
 		select concat('데뷔한 지', days, '일이나 지났습니다. 핑순이들 축하합니다!');
@@ -201,7 +201,142 @@ begin
         end if;
 	end $$
     delimiter ;
-    call ifProc3
-#손코딩 p201
-
+    call ifProc3();
     
+#손코딩 p202
+drop procedure if exists `caseProc`;
+Delimiter $$
+create procedure caseProc()
+begin
+	declare point Int;
+    declare credit char(1);
+    set point = 88;
+    
+    case
+		when `point` >= 90 then
+			set credit = 'A';
+		when `point` >= 80 then
+			set credit = 'B';
+		when `point` >= 70 then
+			set credit = 'C';
+		when `point` >= 60 then
+			set credit = 'D';
+		else
+			set credit = 'F';
+	end case;
+    select concat('취득점수==>', `point`)as '취득점수' , concat('학점==>', `credit`)as '학점';
+    end $$
+    Delimiter ;
+    call caseProc();
+    
+#손코딩 p204
+
+select mem_id, sum(price*amount) "총구매액" -- 회원 별로 총 구매액 조회
+	from `buy`
+    group by `mem_id`;
+    
+select `mem_id`, sum(price*amount) "총구매액" -- 구매액이 많은 순서로 정렬
+	from `buy`
+    group by `mem_id`
+    order by sum(price*amount) desc;
+
+select B.mem_id, M.mem_name, sum(price*amount) "총구매액" -- 회원 이름도 출력, 회원 테이블과 조인.
+	from buy B
+    inner join member M
+    on B.mem_id = M.mem_id
+    group by B.mem_id
+    order by sum(price*amount) desc;
+    
+select M.mem_id, M.mem_name, sum(price*amount) "총구매액" -- 구매하지 않은 나머지의 id 는 구매테이블에 없기 때문에 M에 있는 id 조회.
+	from buy B
+    right outer join member M
+    on B.mem_id = M.mem_id
+    group by M.mem_id
+    order by sum(price*amount) desc;
+    
+
+#손코딩 p206
+
+select M.mem_id, M.mem_name, sum(price*amount) "총구매액",
+	case
+		when (sum(price*amount) >= 1500) then '최우수고객'
+		when (sum(price*amount) >= 1000) then '우수고객'
+		when (sum(price*amount) >= 1) then '일반고객'
+        else '유령고객'
+	end "회원등급" -- 회원등급 열 추가
+    
+	from buy B
+    right outer join member M
+    on B.mem_id = M.mem_id
+    group by M.mem_id
+    order by sum(price*amount) desc;
+
+
+#손코딩 p207 1에서 100까지 값을 모두 더하는 기능.
+drop procedure if exists whileProc;
+delimiter $$
+create procedure whileProc()
+begin
+	declare i int;
+    declare hap int;
+    set i = 1;
+    set hap = 0;
+    
+    while (i<=100) do
+		set hap = hap + i;
+        set i = i + 1;
+	end while;
+		select '1부터 100까지의 합 ==>', hap;
+end $$
+delimiter ;
+call whileProc();
+
+#손코딩 p209
+drop procedure if exists whileProc2;
+delimiter $$
+create procedure whileProc2()
+begin
+	declare i int;
+    declare hap int;
+    set i = 1;
+    set hap = 0;
+    
+    mywhile: -- while문을 mywhile 이라는 레이블로 지정.
+    while (i <= 100) do
+		if (i%4 = 0) then -- i가 4의 배수라면 1을 증가시키고 iterate를 만나 mywhile로 올라감.
+			set i = i + 1;
+            iterate mywhile;
+		end if;
+        set hap = hap + i; -- i가 4의 배수가 아니라면 hap 에 누적시킴.
+        if(hap > 1000) then
+			leave mywhile;
+		end if;
+        set i = i + 1;
+	end while;
+    
+    select '1부터 100까지의 합(4의 배수 제외), 1000넘으면 종료 ==>', hap;
+end $$
+delimiter ;
+call whileProc2();
+#손코딩 p210
+use market_db;
+prepare myQuery from 'select * from member where mem_id = "BLK"';
+execute myQuery;
+deallocate prepare myQuery;
+#손코딩 p211
+drop table if Exists gate_table;
+create table gate_table (id int auto_increment primary key, entry_time datetime);
+
+set @curDate = current_timestamp(); -- 현재 날짜와 시간
+
+prepare myQuery from 'insert into gate_table values(null, ?)'; -- ?를 사용해서 entry_time 에 입력할 값을 비워놈
+execute myQuery Using @curDate; -- using 문으로 앞서 준비한 @curDate 변수를 넣은 후 실행됨. 이 SQL을 실행한 시점의 날짜와 시간 입력.
+deallocate prepare myQuery;
+
+select * from gate_table;
+
+
+
+
+
+
